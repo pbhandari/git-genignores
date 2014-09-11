@@ -48,15 +48,6 @@ class Server
       end
     end
   end
-
-  def make_header(filetype)
-    fence = '#' + '-' * 71
-    "#{fence}\n# #{filetype.capitalize}\n#{fence}\n"
-  end
-
-  def make_footer(_filetype)
-    ''
-  end
 end
 
 options = {}

@@ -39,7 +39,7 @@ class Server
   def check_exists(filetypes)
     Net::HTTP.start(@location, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
-        res = http.request_head "/#{ @prefix + ft + @suffix }"
+        res = http.request_head "/#{ String.new @format % ft }"
         if res.is_a? Net::HTTPSuccess
           $stdout.puts "Found gitignore for #{ft}."
         else

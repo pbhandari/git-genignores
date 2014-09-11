@@ -29,7 +29,7 @@ git genignores --list perl python
 ```
 
 # TODO
- - [ ] Allow support for --list.
+ - [x] Allow support for --list.
  - [ ] Add tests to make my life easier.
  - [ ] Add an --output-file option.
  - [ ] Allow downloads from places other than github's gitignores directory.

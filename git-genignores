@@ -28,7 +28,14 @@ class Server
 
   def check_exists(filetypes)
     Net::HTTP.start(@url, 443, :use_ssl => true) do |http|
-      filetypes.each { |ft| http.request_head "/#{ @prefix + ft + @suffix }" }
+      filetypes.each do |ft|
+        res = http.request_head "/#{ @prefix + ft + @suffix }"
+        if res.kind_of? Net::HTTPSuccess
+          $stdout.puts "Found gitignore for #{ft}."
+        else
+          $stdout.puts "Cannot find the gitignore file for #{ft}."
+        end
+      end
     end
   end
 

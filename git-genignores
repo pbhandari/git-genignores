@@ -3,7 +3,13 @@
 require 'net/http'
 require 'optparse'
 
-
+# This class holds the server information for thir application.
+# The instance variables are as follows:
+#  +url+:: The TLD of a server (e.g. raw.githubusercontent.com)
+#  +port+:: The port with which to connect to the server
+#  +ssl+:: Whether to use ssl or not
+#  +format+:: The format string to use when requesting the file
+#           (e.g. github/gitignores/master/%s.gitignore, default: "%s")
 class Server
   def initialize(url, port: 80, ssl: true, format: '%s')
     @url = url
@@ -16,10 +22,8 @@ class Server
     Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
         res = http.request_get "/#{ String.new @format % ft }"
-        if res.kind_of? Net::HTTPSuccess
-          puts make_header(ft)
-          puts res.body
-          puts make_footer(ft)
+        if res.is_a? Net::HTTPSuccess
+          puts make_header(ft), res.body, make_footer(ft)
         else
           $stderr.puts "Cannot find the gitignore for #{ft}."
         end
@@ -31,7 +35,7 @@ class Server
     Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
         res = http.request_head "/#{ @prefix + ft + @suffix }"
-        if res.kind_of? Net::HTTPSuccess
+        if res.is_a? Net::HTTPSuccess
           $stdout.puts "Found gitignore for #{ft}."
         else
           $stdout.puts "Cannot find the gitignore file for #{ft}."
@@ -41,21 +45,21 @@ class Server
   end
 
   def make_header(filetype)
-    fence = "#" + "-" * 71
+    fence = '#' + '-' * 71
     "#{fence}\n# #{filetype.capitalize}\n#{fence}\n"
   end
 
-  def make_footer(filetype)
-    ""
+  def make_footer(_filetype)
+    ''
   end
 end
 
-options = Hash.new
+options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: #{$0} [options] LANGUAGE"
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options] LANGUAGE"
 
-  opts.on("-l", "--list",
-          "Check whether the server has that particular gitignore file. ") do
+  opts.on('-l', '--list',
+          'Check whether the server has that particular gitignore file.') do
     options[:list] = true
   end
 end.parse!
@@ -66,5 +70,4 @@ args = ARGV.map(&:capitalize)
 
 server = Server.new url, port: 443, ssl: true, format: format
 
-func = options[:list] ? :check_exists : :print_ignores
-github.send func, args
+server.send(options[:list] ? :check_exists : :print_ignores, args)

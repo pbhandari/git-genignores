@@ -5,16 +5,17 @@ require 'optparse'
 
 
 class Server
-  def initialize(url, prefix, suffix)
+  def initialize(url, port: 80, ssl: true, format: '%s')
     @url = url
-    @prefix = prefix
-    @suffix = suffix
+    @port = port
+    @ssl = ssl
+    @format = format
   end
 
   def print_ignores(filetypes)
-    Net::HTTP.start(@url, 443, :use_ssl => true) do |http|
+    Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
-        res = http.request_get "/#{ @prefix + ft + @suffix }"
+        res = http.request_get "/#{ String.new @format % ft }"
         if res.kind_of? Net::HTTPSuccess
           puts make_header(ft)
           puts res.body
@@ -27,7 +28,7 @@ class Server
   end
 
   def check_exists(filetypes)
-    Net::HTTP.start(@url, 443, :use_ssl => true) do |http|
+    Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
         res = http.request_head "/#{ @prefix + ft + @suffix }"
         if res.kind_of? Net::HTTPSuccess
@@ -59,12 +60,11 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-server = "raw.githubusercontent.com"
-prefix = "github/gitignore/master/"
-suffix = ".gitignore"
-args = ARGV.map { |arg| arg.capitalize }
+url = 'raw.githubusercontent.com'
+format = 'github/gitignore/master/%s.gitignore'
+args = ARGV.map(&:capitalize)
 
-github = Server.new server, prefix, suffix
+server = Server.new url, port: 443, ssl: true, format: format
 
 func = options[:list] ? :check_exists : :print_ignores
 github.send func, args

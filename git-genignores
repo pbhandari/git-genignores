@@ -5,7 +5,7 @@ require 'optparse'
 
 # This class holds the server information for thir application.
 # The instance variables are as follows:
-#  +url+:: The TLD of a server (e.g. raw.githubusercontent.com)
+#  +location+:: The TLD of a server (e.g. raw.githubusercontent.com)
 #  +port+:: The port with which to connect to the server
 #  +ssl+:: Whether to use ssl or not
 #  +format+:: The format string to use when requesting the file
@@ -13,9 +13,9 @@ require 'optparse'
 #  +header+:: A format string to insert before the body of the ignore file.
 #  +footer+:: A format string to insert after the body of the ignore file.
 class Server
-  def initialize(url, port: 80, ssl: true, format: '%s', footer: '',
+  def initialize(location, port: 80, ssl: true, format: '%s', footer: '',
                  header: "##{'-' * 71}\n# %s\n##{'-' * 71}\n")
-    @url = url
+    @location = location
     @port = port
     @ssl = ssl
     @format = format
@@ -24,7 +24,7 @@ class Server
   end
 
   def print_ignores(filetypes)
-    Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
+    Net::HTTP.start(@location, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
         res = http.request_get "/#{ String.new @format % ft }"
         if res.is_a? Net::HTTPSuccess
@@ -37,7 +37,7 @@ class Server
   end
 
   def check_exists(filetypes)
-    Net::HTTP.start(@url, @port, use_ssl: @ssl) do |http|
+    Net::HTTP.start(@location, @port, use_ssl: @ssl) do |http|
       filetypes.each do |ft|
         res = http.request_head "/#{ @prefix + ft + @suffix }"
         if res.is_a? Net::HTTPSuccess

@@ -54,15 +54,20 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [options] LANGUAGE"
 
+  options[:capitalize] = true
   opts.on('-l', '--list',
           'Check whether the server has that particular gitignore file.') do
     options[:list] = true
+  end
+
+  opts.on('-c', '--no-capitalize', 'Don\'t auto capitalize.') do
+    options[:capitalize] = false
   end
 end.parse!
 
 url = 'raw.githubusercontent.com'
 format = 'github/gitignore/master/%s.gitignore'
-args = ARGV.map(&:capitalize)
+args = options[:capitalize] ? ARGV.map(&:capitalize) : ARGV
 
 server = Server.new url, port: 443, ssl: true, format: format
 

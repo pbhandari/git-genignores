@@ -10,12 +10,17 @@ require 'optparse'
 #  +ssl+:: Whether to use ssl or not
 #  +format+:: The format string to use when requesting the file
 #           (e.g. github/gitignores/master/%s.gitignore, default: "%s")
+#  +header+:: A format string to insert before the body of the ignore file.
+#  +footer+:: A format string to insert after the body of the ignore file.
 class Server
-  def initialize(url, port: 80, ssl: true, format: '%s')
+  def initialize(url, port: 80, ssl: true, format: '%s', footer: '',
+                 header: "##{'-' * 71}\n# %s\n##{'-' * 71}\n")
     @url = url
     @port = port
     @ssl = ssl
     @format = format
+    @header = header
+    @footer = footer
   end
 
   def print_ignores(filetypes)
@@ -23,7 +28,7 @@ class Server
       filetypes.each do |ft|
         res = http.request_get "/#{ String.new @format % ft }"
         if res.is_a? Net::HTTPSuccess
-          puts make_header(ft), res.body, make_footer(ft)
+          puts "#{@header % ft + res.body + @footer % ft}"
         else
           $stderr.puts "Cannot find the gitignore for #{ft}."
         end

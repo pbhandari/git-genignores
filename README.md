@@ -4,10 +4,10 @@ A small program to automatically download the required gitignore file from the
 @github/gitignores directory.
 
 # Usage
-`git genignores [-l|--list] LANGUAGE`
+`git genignores [options] LANGUAGE`
 
 # Installation
-```
+```sh
 cd $SOME_DIR
 curl --remote-name https://raw.githubusercontent.com/pbhandari/git-genignores/master/git-genignores
 ```
@@ -16,7 +16,7 @@ curl --remote-name https://raw.githubusercontent.com/pbhandari/git-genignores/ma
 `git genignores`.
 
 # Examples
-```
+```sh
 # Print out gitignores for Ada, Perl and Ruby
 git genignores ada perl ruby
 
@@ -32,4 +32,6 @@ git genignores --list perl python
  - [x] Allow support for --list.
  - [ ] Add tests to make my life easier.
  - [ ] Add an --output-file option.
- - [ ] Allow downloads from places other than github's gitignores directory.
+ - [x] Allow downloads from places other than github's gitignores directory.
+ - [ ] Allow for configurations to be read from git's default config files
+ - [ ] `--list` is a stupid name, change it to something sane

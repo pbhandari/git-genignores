@@ -86,14 +86,19 @@ OptionParser.new do |opts|
     options[:format] = fmt
   end
 
-  opts.on('-h', '--header FORMAT',
+  opts.on('--header FORMAT',
           'The format string to give to the server.') do |fmt|
     options[:header] = fmt
   end
 
-  opts.on('-t', '--footer FORMAT',
+  opts.on('--footer FORMAT',
           'The format string to give to the server.') do |fmt|
     options[:footer] = fmt
+  end
+
+  opts.on('-h', '--help', 'Displays Help') do
+    puts opts
+    exit
   end
 end.parse!
 

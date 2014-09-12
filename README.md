@@ -4,7 +4,20 @@ A small program to automatically download the required gitignore file from the
 @github/gitignores directory.
 
 # Usage
-`git genignores [options] LANGUAGE`
+```
+Usage: git genignores [OPTIONS] LANGUAGE
+    -l, --list                       Check whether the server has that particular gitignore file.
+        --[no-]capitalize            Don't auto capitalize.
+    -s, --server SERVER              The server to query the gitignores from
+    -p, --port PORT                  The port to connect on.
+        --[no-]ssl                   Use SSL to connect to the [SERVER]
+    -f, --format FORMAT              The format used to query the SERVER for the files.
+        --header FORMAT              The format string to give to the server.
+        --footer FORMAT              The format string to give to the server.
+    -h                               Displays help.
+```
+**Note** `--help` doesn't work since git tries to look for a man page for
+this.
 
 # Installation
 ```sh

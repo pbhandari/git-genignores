@@ -13,8 +13,8 @@ require 'optparse'
 #  +header+:: A format string to insert before the body of the ignore file.
 #  +footer+:: A format string to insert after the body of the ignore file.
 class Server
-  def initialize(location, port: 80, ssl: true, format: '%s', footer: '',
-                 header: "##{'-' * 71}\n# %s\n##{'-' * 71}\n")
+  def initialize(location, port: 80, ssl: false, format: '%s', footer: '',
+                 header: '')
     @location = location
     @port = port
     @ssl = ssl
@@ -60,15 +60,53 @@ OptionParser.new do |opts|
     options[:list] = true
   end
 
-  opts.on('-c', '--no-capitalize', 'Don\'t auto capitalize.') do
-    options[:capitalize] = false
+  opts.on('--[no-]capitalize', 'Don\'t auto capitalize.') do |cpt|
+    options[:capitalize] = cpt
+  end
+
+  opts.on('-s', '--server SERVER',
+          'The server to query the gitignores from') do |srv|
+    options[:server] = srv
+    options[:port] ||= 80
+    options[:ssl] ||= false
+  end
+
+  opts.on('-p', '--port PORT', Integer, 'The port to connect on.') do |p|
+    options[:port] = p
+    options[:ssl] ||= false unless p == 443
+  end
+
+  opts.on('--[no-]ssl', 'Use SSL to connect to tne [SERVER]') do |s|
+    options[:ssl] = s
+    options[:port] ||= 443 if s
+  end
+
+  opts.on('-f', '--format FORMAT',
+          'The format used to query the SERVER for the files.') do |fmt|
+    options[:format] = fmt
+  end
+
+  opts.on('-h', '--header FORMAT',
+          'The format string to give to the server.') do |fmt|
+    options[:header] = fmt
+  end
+
+  opts.on('-t', '--footer FORMAT',
+          'The format string to give to the server.') do |fmt|
+    options[:footer] = fmt
   end
 end.parse!
 
-url = 'raw.githubusercontent.com'
-format = 'github/gitignore/master/%s.gitignore'
+server = options[:server] || 'raw.githubusercontent.com'
+format = options[:format] || 'github/gitignore/master/%s.gitignore'
+header = options[:header] || "##{'-' * 71}\n# %s\n##{'-' * 71}\n"
+footer = options[:footer] || ''
+port = options[:port] || 443
+ssl = options[:ssl] || true
+
 args = options[:capitalize] ? ARGV.map(&:capitalize) : ARGV
 
-server = Server.new url, port: 443, ssl: true, format: format
+server = Server.new server, port: port, ssl: ssl, format: format,
+                    header: header, footer: footer
 
 server.send(options[:list] ? :check_exists : :print_ignores, args)

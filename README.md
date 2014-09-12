@@ -29,9 +29,9 @@ git genignores --list perl python
 ```
 
 # TODO
- - [x] Allow support for --list.
+ - [x] Allow support for `--list`.
  - [ ] Add tests to make my life easier.
- - [ ] Add an --output-file option.
+ - [ ] Add an `--output-file` option.
  - [x] Allow downloads from places other than github's gitignores directory.
  - [ ] Allow for configurations to be read from git's default config files
  - [ ] `--list` is a stupid name, change it to something sane

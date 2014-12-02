@@ -31,14 +31,14 @@ curl --remote-name https://raw.githubusercontent.com/pbhandari/git-genignores/ma
 # Examples
 ```sh
 # Print out gitignores for Ada, Perl and Ruby
-git genignores ada perl ruby
+git genignores Ada Perl Ruby
 
 # Save the gitignores to a file
-git genignores python > .gitignore
+git genignores Python > .gitignore
 
 # Check whether the gitignore for Perl and Python
 # exists in the server
-git genignores --list perl python
+git genignores --list Perl Python
 ```
 
 # TODO

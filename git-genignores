@@ -54,7 +54,6 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: #{$PROGRAM_NAME} [options] LANGUAGE"
 
-  options[:capitalize] = true
   opts.on('-l', '--list',
           'Check whether the server has that particular gitignore file.') do
     options[:list] = true
@@ -69,6 +68,8 @@ OptionParser.new do |opts|
     options[:server] = srv
     options[:port] ||= 80
     options[:ssl] ||= false
+    options[:format] ||= '%s'
+    options[:capitalize] ||= false
   end
 
   opts.on('-p', '--port PORT', Integer, 'The port to connect on.') do |p|
@@ -84,6 +85,7 @@ OptionParser.new do |opts|
   opts.on('-f', '--format FORMAT',
           'The format used to query the SERVER for the files.') do |fmt|
     options[:format] = fmt
+    options[:capitalize] ||= false
   end
 
   opts.on('--header FORMAT',
@@ -109,9 +111,9 @@ footer = options[:footer] || ''
 port = options[:port] || 443
 ssl = options[:ssl] || true
 
-args = options[:capitalize] ? ARGV.map(&:capitalize) : ARGV
 
 server = Server.new server, port: port, ssl: ssl, format: format,
                     header: header, footer: footer
 
-server.send(options[:list] ? :check_exists : :print_ignores, args)
+server.send(options[:list] ? :check_exists : :print_ignores,
+            options[:capitalize] ? ARGV.map(&:capitalize) : ARGV)

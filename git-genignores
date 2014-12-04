@@ -109,8 +109,7 @@ format = options[:format] || 'github/gitignore/master/%s.gitignore'
 header = options[:header] || "##{'-' * 71}\n# %s\n##{'-' * 71}\n"
 footer = options[:footer] || ''
 port = options[:port] || 443
-ssl = options[:ssl] || true
-
+ssl = options[:ssl].nil? ? true : options[:ssl]
 
 server = Server.new server, port: port, ssl: ssl, format: format,
                     header: header, footer: footer

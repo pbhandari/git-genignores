@@ -52,7 +52,7 @@ end
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: #{$PROGRAM_NAME} [options] LANGUAGE"
+  opts.banner = "Usage: #{$PROGRAM_NAME} [OPTIONS] LANGUAGE"
 
   opts.on('-l', '--list',
           'Check whether the server has that particular gitignore file.') do
@@ -64,7 +64,7 @@ OptionParser.new do |opts|
   end
 
   opts.on('-s', '--server SERVER',
-          'The server to query the gitignores from') do |srv|
+          'Query SERVER for the gitignore files.') do |srv|
     options[:server] = srv
     options[:port] ||= 80
     options[:ssl] ||= false
@@ -72,12 +72,12 @@ OptionParser.new do |opts|
     options[:capitalize] ||= false
   end
 
-  opts.on('-p', '--port PORT', Integer, 'The port to connect on.') do |p|
+  opts.on('-p', '--port PORT', Integer, 'Connect to SERVER on PORT.') do |p|
     options[:port] = p
     options[:ssl] ||= false unless p == 443
   end
 
-  opts.on('--[no-]ssl', 'Use SSL to connect to tne [SERVER]') do |s|
+  opts.on('--[no-]ssl', 'Use SSL to connect to tne SERVER') do |s|
     options[:ssl] = s
     options[:port] ||= 443 if s
   end
@@ -98,8 +98,8 @@ OptionParser.new do |opts|
     options[:footer] = fmt
   end
 
-  opts.on('-h', '--help', 'Displays Help') do
-    puts opts
+  opts.on('-h', '--help', 'Display this help.') do
+    $stdout.puts opts
     exit
   end
 end.parse!
